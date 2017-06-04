@@ -31,6 +31,7 @@
 #include "printf.h"
 #include "stm32f10x_tim.h"
 #include "Clock.hpp"
+#include "Led.hpp"
 
 #include "ws2812.h"
 #include "Dmx.hpp"
@@ -61,14 +62,16 @@ int main()
 
 	WS2812<NUM_LEDS> ws2812(leds, NUM_LEDS);
 	ws2812.update();
+	uint8_t h = 0;
 	while(true)
 	{
-		Clock::delayMs(1000);
+		leds[0].setHue(h);
+		h += 2;
 
-		for(int i = 0; i < 20; ++i)
-		{
-			printf_("%i ", getDmxData()[i]);
-		}
+		ws2812.update();
+
+		Clock::delayMs(100);
+
 	}
 
 

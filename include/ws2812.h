@@ -1,13 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <cstring> //for size_t
-
-struct Led
-{
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-}__attribute__ ((__packed__));
+#include "Led.hpp"
 
 
 template <uint16_t NUM_LEDS>
