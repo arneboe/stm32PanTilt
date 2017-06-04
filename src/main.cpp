@@ -30,8 +30,12 @@
 #include <stdlib.h>
 #include "printf.h"
 #include "stm32f10x_tim.h"
+#include "PanTiltCtrl.hpp"
+#include "pelcoD/PelcoD.hpp"
+#include "Clock.hpp"
 
 #include "ws2812.h"
+#include "Dmx.hpp"
 
 
 // ----------------------------------------------------------------------------
@@ -70,20 +74,71 @@
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wmissing-declarations"
-#pragma GCC diagnostic ignored "-Wreturn-type"
 
-int
-main(int argc, char* argv[])
+
+
+int main()
 {
-	init_UART1(); //init debug usart port
+//init_UART1(); //init debug usart port
+	SysTick_Config(72000);
+
+	dmxInit();
+
+	while(true)
+	{
+		Clock::delayMs(1000);
+
+		for(int i = 0; i < 20; ++i)
+		{
+			printf_("%i ", vu8_DMX_Buff[i]);
+		}
+	}
+
+
+//	initPanTilt();
+//
+//	PelcoD left(1);
+//	left.moveLeft(0xFF);
+//	left.calcChecksum();
+//
+//	PelcoD right(1);
+//	right.moveRight(0xFF);
+//	right.calcChecksum();
+//
+//	PelcoD up(1);
+//	up.moveUp(0xFF);
+//	up.calcChecksum();
+//
+//	PelcoD down(1);
+//	down.moveDown(0xFF);
+//	down.calcChecksum();
+//
+//	const uint16_t numEntries = 12;
+//	SequenceEntry seq[numEntries] = {
+//			{&up, 200},
+//			{&left, 800},
+//			{&up, 200},
+//			{&left, 800},
+//			{&up, 200},
+//			{&left, 800},
+//			{&down, 200},
+//			{&right, 800},
+//			{&down, 200},
+//			{&right, 800},
+//			{&down, 200},
+//			{&right, 800}
+//
+//	};
+
+	//writeCommand(right);
+	//Clock::delayMs(15000);
+	//writeCommand(left);
+	//Clock::delayMs(6000);
 
 
 
 //	BlinkLed blinkLed;
-	ws2812Init();
+//	ws2812Init();
 
 	// Perform all necessary initialisations for the LED.
 //	blinkLed.powerUp();
@@ -91,13 +146,29 @@ main(int argc, char* argv[])
 	// Infinite loop
 	while (1)
 	{
+//		printf_("play\n");
+//		playSequence(seq, numEntries);
 
 		//USART1_Send("penis\n", 6);
-		printf_("%d\n", TIM_GetCounter(TIM4));
+//		printf_("%d\n", TIM_GetCounter(TIM4));
 	}
   // Infinite loop, never return.
+	return 0;
 }
 
-#pragma GCC diagnostic pop
+extern "C" {
+void SysTick_Handler()
+{
+	Clock::tick(1);
+//	if (TIM2->CCR4 == 0)
+//	{
+//		TIM2->CCR4 = 65;
+//	}
+//	else
+//	{
+//		TIM2->CCR4 = 0;
+//	}
+}
+}
 
 // ----------------------------------------------------------------------------

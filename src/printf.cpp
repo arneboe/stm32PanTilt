@@ -42,7 +42,7 @@
 +=============================================================================+
 */
 //#define INCLUDE_FLOAT  // this enables float in printf() and costs you about 2kByte ROM
-#define UART1_BAUDRATE  		115200
+#define UART1_BAUDRATE  		2400
 /*
 +=============================================================================+
 | global declarations
