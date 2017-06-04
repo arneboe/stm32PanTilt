@@ -36,18 +36,31 @@
 #include "Dmx.hpp"
 
 
-#define NUM_LEDS 60
+#define NUM_LEDS 3
 
 int main()
 {
 
 	Led leds[NUM_LEDS];
 
-	initPrintf();
+	//initPrintf();
 	SysTick_Config(72000);
-	initDmx();
-	WS2812<NUM_LEDS> ws2812(leds, NUM_LEDS);
+//	initDmx();
 
+	leds[0].r = 255;
+	leds[0].g = 0;
+	leds[0].b = 0;
+
+	leds[1].r = 0;
+	leds[1].g = 255;
+	leds[1].b = 0;
+
+	leds[2].r = 0;
+	leds[2].g = 0;
+	leds[2].b = 255;
+
+	WS2812<NUM_LEDS> ws2812(leds, NUM_LEDS);
+	ws2812.update();
 	while(true)
 	{
 		Clock::delayMs(1000);
