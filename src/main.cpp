@@ -46,7 +46,7 @@ int main()
 
 	//initPrintf();
 	SysTick_Config(72000);
-//	initDmx();
+	initDmx();
 
 	leds[0].r = 255;
 	leds[0].g = 0;
@@ -65,8 +65,14 @@ int main()
 	uint8_t h = 0;
 	while(true)
 	{
-		leds[0].setHue(h);
-		h += 2;
+
+		volatile uint8_t* dmxData = getDmxData();
+		for(int i = 0; i < NUM_LEDS; ++i)
+		{
+			leds[i].r = dmxData[3 * i + 1];
+			leds[i].g = dmxData[3 * i + 2];
+			leds[i].b = dmxData[3 * i + 3];
+		}
 
 		ws2812.update();
 
