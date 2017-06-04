@@ -42,7 +42,7 @@
 +=============================================================================+
 */
 //#define INCLUDE_FLOAT  // this enables float in printf() and costs you about 2kByte ROM
-#define UART1_BAUDRATE  		2400
+#define UART1_BAUDRATE  		115200
 /*
 +=============================================================================+
 | global declarations
@@ -58,7 +58,6 @@ int sprintf_(char *buffer, const char *format, ...);
 +=============================================================================+
 */
 
-void init_UART1(void);          // STM32 specific stuff
 
 void putc_UART1 (char);         // blocking put char; used by printf_()
 void putc_strg(char);          // the put() function for sprintf()
@@ -73,7 +72,7 @@ void long_itoa (long, int, int, void (*) (char)); //heavily used by printf_()
 | STM32 register definition only here and in interrupt handler
 +=============================================================================+
 */
-void init_UART1(void)
+void initPrintf(void)
 {
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);

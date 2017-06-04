@@ -1,5 +1,5 @@
 #pragma once
 
-void init_UART1();
+void initPrintf();
 int printf_(const char *format, ...);
 int sprintf_(char *buffer, const char *format, ...);

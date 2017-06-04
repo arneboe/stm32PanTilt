@@ -30,59 +30,23 @@
 #include <stdlib.h>
 #include "printf.h"
 #include "stm32f10x_tim.h"
-#include "PanTiltCtrl.hpp"
-#include "pelcoD/PelcoD.hpp"
 #include "Clock.hpp"
 
 #include "ws2812.h"
 #include "Dmx.hpp"
 
 
-// ----------------------------------------------------------------------------
-//
-// Standalone STM32F1 led blink sample (trace via NONE).
-//
-// In debug configurations, demonstrate how to print a greeting message
-// on the trace device. In release configurations the message is
-// simply discarded.
-//
-// Then demonstrates how to blink a led with 1 Hz, using a
-// continuous loop and SysTick delays.
-//
-// Trace support is enabled by adding the TRACE macro definition.
-// By default the trace messages are forwarded to the NONE output,
-// but can be rerouted to any device or completely suppressed, by
-// changing the definitions required in system/src/diag/trace_impl.c
-// (currently OS_USE_TRACE_SEMIHOSTING_DEBUG/_STDOUT).
-//
-// The external clock frequency is specified as a preprocessor definition
-// passed to the compiler via a command line option (see the 'C/C++ General' ->
-// 'Paths and Symbols' -> the 'Symbols' tab, if you want to change it).
-// The value selected during project creation was HSE_VALUE=8000000.
-//
-// Note: The default clock settings take the user defined HSE_VALUE and try
-// to reach the maximum possible system clock. For the default 8 MHz input
-// the result is guaranteed, but for other values it might not be possible,
-// so please adjust the PLL settings in system/src/cmsis/system_stm32f10x.c
-//
-
-
-
-
-
-// ----- main() ---------------------------------------------------------------
-
-// Sample pragmas to cope with warnings. Please note the related line at
-// the end of this function, used to pop the compiler diagnostics status.
-
-
+#define NUM_LEDS 60
 
 int main()
 {
-//init_UART1(); //init debug usart port
-	SysTick_Config(72000);
 
-	dmxInit();
+	Led leds[NUM_LEDS];
+
+	initPrintf();
+	SysTick_Config(72000);
+	initDmx();
+	WS2812<NUM_LEDS> ws2812(leds, NUM_LEDS);
 
 	while(true)
 	{
@@ -90,7 +54,7 @@ int main()
 
 		for(int i = 0; i < 20; ++i)
 		{
-			printf_("%i ", vu8_DMX_Buff[i]);
+			printf_("%i ", getDmxData()[i]);
 		}
 	}
 

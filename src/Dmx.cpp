@@ -1,7 +1,15 @@
+//based on:
+//http://www.emcu.it/STM32/Lighting-Control-using-DMX512-protocol-on-STM32/Lighting-Control-using-DMX512-protocol-on-STM32.html
+
 #include "Dmx.hpp"
 
 #define FRAMMING_ERROR_FLAG      0x00000002
 #define RXNE_FLAG                0x00000020
+#define RESET_VALUE                0
+#define BREAK_TO_BREAK_TIME       149
+#define MAB_TIME                   1
+#define BREAK_TIME                 11
+#define TIMER_OVERFLOW_Value     0xFFFF
 
 ErrorStatus HSEStartUpStatus;
 bool b_BreakFlag = false;
@@ -157,14 +165,18 @@ void Timer2_Intialise(void)
   TIM_Cmd(TIM2, ENABLE);
 }
 
-void dmxInit()
+void initDmx()
 {
-  RCC_Configuration();
-  GPIO_Configuration();
-  USART1_Intialise();
-  Timer2_Intialise();
-  NVIC_Configuration();
+	RCC_Configuration();
+	GPIO_Configuration();
+	USART1_Intialise();
+	Timer2_Intialise();
+	NVIC_Configuration();
+}
 
+volatile uint8_t* getDmxData()
+{
+	return vu8_DMX_Buff;
 }
 
 u32 u32_StatusRead = 0;
