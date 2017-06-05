@@ -37,7 +37,7 @@
 #include "Dmx.hpp"
 
 
-#define NUM_LEDS 3
+#define NUM_LEDS 60
 
 int main()
 {
@@ -48,17 +48,6 @@ int main()
 	SysTick_Config(72000);
 	initDmx();
 
-	leds[0].r = 255;
-	leds[0].g = 0;
-	leds[0].b = 0;
-
-	leds[1].r = 0;
-	leds[1].g = 255;
-	leds[1].b = 0;
-
-	leds[2].r = 0;
-	leds[2].g = 0;
-	leds[2].b = 255;
 
 	WS2812<NUM_LEDS> ws2812(leds, NUM_LEDS);
 	ws2812.update();
@@ -66,17 +55,24 @@ int main()
 	while(true)
 	{
 
-		volatile uint8_t* dmxData = getDmxData();
+//		volatile uint8_t* dmxData = getDmxData();
+//		for(int i = 0; i < NUM_LEDS; ++i)
+//		{
+//			leds[i].r = dmxData[3 * i + 1];
+//			leds[i].g = dmxData[3 * i + 2];
+//			leds[i].b = dmxData[3 * i + 3];
+//		}
+
+
 		for(int i = 0; i < NUM_LEDS; ++i)
 		{
-			leds[i].r = dmxData[3 * i + 1];
-			leds[i].g = dmxData[3 * i + 2];
-			leds[i].b = dmxData[3 * i + 3];
+			leds[i].setHue(h);
 		}
+		++h;
 
 		ws2812.update();
 
-		Clock::delayMs(100);
+		Clock::delayMs(50);
 
 	}
 
