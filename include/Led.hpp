@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cstdint>
 
 #define K255 255
 #define K171 171
