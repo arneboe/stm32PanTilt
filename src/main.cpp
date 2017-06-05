@@ -37,8 +37,12 @@
 #include "ws2812.h"
 #include "Dmx.hpp"
 
-
+#define DMX_ADDRESS 1 //dmx addresses start with 1, not zero
 #define NUM_LEDS 60
+
+uint8_t getDmxEffectId();
+uint8_t getDmxSpeed();
+
 
 int main()
 {
@@ -52,19 +56,29 @@ int main()
 	EffectManager effectManager;
 	effectManager.addEffect(updateColorFade);
 
+	volatile uint8_t* dmxData = getDmxData();
 	while(true)
 	{
-		Clock::delayMs(5); //FIXME use better method for dt calculation
-		effectManager.execute(0, 5, 100, leds, NUM_LEDS);
+		Clock::delayMs(5);
+		const uint8_t effectId = getDmxEffectId();
+		const uint8_t speed = getDmxSpeed();
+		const uint8_t dt = 5; //FIXME use better method for dt calculation
+		effectManager.execute(effectId, 5, speed, leds, NUM_LEDS);
 		ws2812.update();
 	}
 	return 0;
 }
 
-extern "C" {
-void SysTick_Handler()
+uint8_t getDmxSpeed()
 {
-	//update clock by 1 ms
-	Clock::tick(1);
+	return getDmxData()[DMX_ADDRESS + 1];
 }
+
+
+uint8_t getDmxEffectId()
+{
+	return getDmxData()[DMX_ADDRESS];
 }
+
+
+
