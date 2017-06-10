@@ -59,7 +59,7 @@ uint8_t getDmxstrobe();
 int main()
 {
 	initPrintf();
-	printf_("Conartism LED Controller alive!");
+	printf_("\n\nConartism LED Controller alive!\n\n");
 
 	SysTick_Config(72000);
 	initDmx();
@@ -73,16 +73,22 @@ int main()
 	uint32_t lastTime = Clock::ticks;
 	while(true)
 	{
-		if(Clock::ticks >= lastTime + 10)
-		{//every 10 ms
+		if(Clock::ticks >= lastTime + 2)
+		{//every 2 ms
+			const uint8_t dt = Clock::ticks - lastTime;
 			lastTime = Clock::ticks;
+
 			const uint8_t effectId = getDmxEffectId();
 			const uint8_t speed = getDmxSpeed();
-			const uint8_t dt = 10; //FIXME if an effect takes longer than 10ms this is wrong
 			const uint8_t effectParam1 = getDmxEffectParam1();
 			const uint8_t effectParam2 = getDmxEffectParam2();
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
 			ws2812.update(getDmxBrightness());
+
+			if(Clock::ticks - lastTime > 2)
+			{
+				printf_("Timing Error!: %d\n", Clock::ticks - lastTime);
+			}
 		}
 	}
 	return 0;
