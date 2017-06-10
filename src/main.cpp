@@ -26,6 +26,7 @@
  */
 
 // ----------------------------------------------------------------------------
+#define FIXMATH_NO_CACHE
 
 #include <stdlib.h>
 #include "printf.h"
@@ -42,6 +43,7 @@
 
 uint8_t getDmxEffectId();
 uint8_t getDmxSpeed();
+uint8_t getDmxBrightness();
 
 
 int main()
@@ -58,8 +60,6 @@ int main()
 	EffectManager effectManager;
 	effectManager.addEffect(updateColorFade);
 
-	volatile uint8_t* dmxData = getDmxData();
-
 	uint32_t lastTime = Clock::ticks;
 	while(true)
 	{
@@ -70,7 +70,7 @@ int main()
 			const uint8_t speed = getDmxSpeed();
 			const uint8_t dt = 10; //FIXME if an effect takes longer than 10ms this is wrong
 			effectManager.execute(effectId, dt, speed, leds, NUM_LEDS);
-			ws2812.update();
+			ws2812.update(getDmxBrightness());
 		}
 	}
 	return 0;
@@ -85,6 +85,11 @@ uint8_t getDmxSpeed()
 uint8_t getDmxEffectId()
 {
 	return getDmxData()[DMX_ADDRESS];
+}
+
+uint8_t getDmxBrightness()
+{
+	return getDmxData()[DMX_ADDRESS + 2];
 }
 
 

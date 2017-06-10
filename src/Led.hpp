@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include "libfixmath/fixmath.h"
 
 #define K255 255
 #define K171 171
@@ -26,6 +27,15 @@ struct Led
 	{
 		setHSV(hue, 255, 255);
 	}
+
+	/**@param brightness in range [0..1] */
+	void setBrightness(Fix16& brightness)
+	{
+		r = (Fix16(r) * brightness).toUint8();
+		g = (Fix16(g) * brightness).toUint8();
+		b = (Fix16(b) * brightness).toUint8();
+	}
+
 
 	//Adapted from FastLED
 	void setHSV(uint8_t hue, uint8_t sat, uint8_t val)

@@ -12,7 +12,7 @@ public:
 
 	/**Update internal buffer from led data
 	 * Data from internal buffer will be send repeatedly until update is called again */
-	void update();
+	void update(uint8_t brightness);
 private:
 
 	void copyLed(const Led& led, uint8_t* buf);
@@ -85,12 +85,16 @@ WS2812<NUM_LEDS>::WS2812(const Led* _leds, size_t num) : leds(_leds), numLeds(nu
 }
 
 template <uint16_t NUM_LEDS>
-void WS2812<NUM_LEDS>::update()
+void WS2812<NUM_LEDS>::update(uint8_t brightness)
 {
+	Fix16 fixBrightness(brightness);
+	fixBrightness /= (int16_t)255;
 	for(int i = 0; i < NUM_LEDS; ++i)
 	{
+		Led l(leds[i]);
+		l.setBrightness(fixBrightness);
 		// (* 24) because every led takes up 24 bytes in the buffer
-		copyLed(leds[i], buffer + i * 24);
+		copyLed(l, buffer + i * 24);
 	}
 
 	//NOTE the last 40 bytes in buffer are never touched.
