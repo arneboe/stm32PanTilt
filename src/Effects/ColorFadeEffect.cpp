@@ -19,7 +19,7 @@ void updateColorFade(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, 
  * Fastest speed = 500 changes per second
  * Slowest speed = 1 change per second
  */
-	const uint16_t cps = map2(speed, 0, 255, MIN_CPS, MAX_CPS);
+	const uint16_t cps = map(speed, 0, 255, MIN_CPS, MAX_CPS);
 	const float hueChange = cps / 1000.0f * dt;
 	s.hue.update(hueChange);
 //	printf_("hue: %d, hueChange: %f, speed: %d, cps: %d, dt: %d\n", s.hue.get(), hueChange, speed, cps, dt);

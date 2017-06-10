@@ -37,6 +37,7 @@
 #include "Effects/ColorFadeEffect.hpp"
 #include "ws2812.h"
 #include "Dmx.hpp"
+#include "Helpers.hpp"
 
 #define DMX_ADDRESS 1 //dmx addresses start with 1, not zero
 #define DMX_EFFECT_ID DMX_ADDRESS
@@ -54,6 +55,7 @@ uint8_t getDmxBrightness();
 uint8_t getDmxEffectParam1();
 uint8_t getDmxEffectParam2();
 uint8_t getDmxstrobe();
+uint8_t strobeBrightness();
 
 
 int main()
@@ -83,7 +85,7 @@ int main()
 			const uint8_t effectParam1 = getDmxEffectParam1();
 			const uint8_t effectParam2 = getDmxEffectParam2();
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
-			ws2812.update(getDmxBrightness());
+			ws2812.update(strobeBrightness());
 
 			if(Clock::ticks - lastTime > 2)
 			{
@@ -123,6 +125,53 @@ uint8_t getDmxEffectParam2()
 uint8_t getDmxstrobe()
 {
 	return getDmxData()[DMX_STROBE];
+}
+
+
+uint32_t strobeOnTimestamp = 0;
+uint32_t strobeOffTimestamp = 0;
+bool strobeOn = false;
+
+uint8_t strobeBrightness()
+{
+	const uint8_t strobeSpeed = getDmxstrobe();
+	//below 5 the strobe is off
+	if(strobeSpeed < 3)
+	{
+		return getDmxBrightness();
+	}
+
+	const uint8_t minFps = 1; //fps = flashes per second
+	const uint8_t maxFps = 40;
+	const uint8_t fps = map(strobeSpeed, 3, 255, minFps, maxFps);
+	const uint16_t strobeOffTimeMs = 1000 / fps;
+
+
+	const uint8_t strobeOnTimeMs = 5;
+	const uint32_t currentTimestamp = Clock::ticks;
+
+	if(strobeOn)
+	{
+		if(currentTimestamp - strobeOnTimestamp >= strobeOnTimeMs)
+		{
+			//turn strobe of
+			strobeOn = false;
+			strobeOffTimestamp = currentTimestamp;
+			return 0; //set led brightness to 0
+		}
+		return getDmxBrightness();
+	}
+	else
+	{
+		if(currentTimestamp - strobeOffTimestamp >= strobeOffTimeMs)
+		{
+			strobeOn = true;
+			strobeOnTimestamp = currentTimestamp;
+			return getDmxBrightness();
+		}
+		return 0; //leds still off
+	}
+
 }
 
 
