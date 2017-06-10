@@ -13,7 +13,7 @@ struct State
 
 static State s;
 
-void updateColorFade(uint8_t dt, uint8_t speed, Led* leds, uint16_t numLeds)
+void updateColorFade(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Led* leds, uint16_t numLeds)
 {
 /**
  * Fastest speed = 500 changes per second

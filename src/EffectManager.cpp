@@ -26,11 +26,11 @@ void EffectManager::addEffect(UpdateFunc updateFunc)
 	}
 }
 
-void EffectManager::execute(uint8_t effectId, uint8_t dt, uint8_t speed, Led* leds, uint16_t numLeds)
+void EffectManager::execute(uint8_t effectId, uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Led* leds, uint16_t numLeds)
 {
 	if(numeffects == 0)
 		return;
 
 	const uint8_t id = effectId % numeffects;
-	effects[id](dt, speed, leds, numLeds);
+	effects[id](dt, speed, param1, param2, leds, numLeds);
 }

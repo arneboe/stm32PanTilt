@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 
+
 class Hue
 {
 private:

@@ -39,11 +39,21 @@
 #include "Dmx.hpp"
 
 #define DMX_ADDRESS 1 //dmx addresses start with 1, not zero
+#define DMX_EFFECT_ID DMX_ADDRESS
+#define DMX_SPEED DMX_ADDRESS + 1
+#define DMX_BRIGHTNESS DMX_ADDRESS + 2
+#define DMX_EFFECT_PARAM_1 DMX_ADDRESS + 3
+#define DMX_EFFECT_PARAM_2 DMX_ADDRESS + 4
+#define DMX_STROBE DMX_ADDRESS + 5
+
 #define NUM_LEDS 60
 
 uint8_t getDmxEffectId();
 uint8_t getDmxSpeed();
 uint8_t getDmxBrightness();
+uint8_t getDmxEffectParam1();
+uint8_t getDmxEffectParam2();
+uint8_t getDmxstrobe();
 
 
 int main()
@@ -69,7 +79,9 @@ int main()
 			const uint8_t effectId = getDmxEffectId();
 			const uint8_t speed = getDmxSpeed();
 			const uint8_t dt = 10; //FIXME if an effect takes longer than 10ms this is wrong
-			effectManager.execute(effectId, dt, speed, leds, NUM_LEDS);
+			const uint8_t effectParam1 = getDmxEffectParam1();
+			const uint8_t effectParam2 = getDmxEffectParam2();
+			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
 			ws2812.update(getDmxBrightness());
 		}
 	}
@@ -78,19 +90,33 @@ int main()
 
 uint8_t getDmxSpeed()
 {
-	return getDmxData()[DMX_ADDRESS + 1];
+	return getDmxData()[DMX_SPEED];
 }
 
 
 uint8_t getDmxEffectId()
 {
-	return getDmxData()[DMX_ADDRESS];
+	return getDmxData()[DMX_EFFECT_ID];
 }
 
 uint8_t getDmxBrightness()
 {
-	return getDmxData()[DMX_ADDRESS + 2];
+	return getDmxData()[DMX_BRIGHTNESS];
 }
 
+uint8_t getDmxEffectParam1()
+{
+	return getDmxData()[DMX_EFFECT_PARAM_1];
+}
+
+uint8_t getDmxEffectParam2()
+{
+	return getDmxData()[DMX_EFFECT_PARAM_2];
+}
+
+uint8_t getDmxstrobe()
+{
+	return getDmxData()[DMX_STROBE];
+}
 
 
