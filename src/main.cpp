@@ -46,7 +46,9 @@ uint8_t getDmxSpeed();
 
 int main()
 {
-	//initPrintf();
+	initPrintf();
+	printf_("Conartism LED Controller alive!");
+
 	SysTick_Config(72000);
 	initDmx();
 
@@ -57,14 +59,19 @@ int main()
 	effectManager.addEffect(updateColorFade);
 
 	volatile uint8_t* dmxData = getDmxData();
+
+	uint32_t lastTime = Clock::ticks;
 	while(true)
 	{
-		Clock::delayMs(5);
-		const uint8_t effectId = getDmxEffectId();
-		const uint8_t speed = getDmxSpeed();
-		const uint8_t dt = 5; //FIXME use better method for dt calculation
-		effectManager.execute(effectId, 5, speed, leds, NUM_LEDS);
-		ws2812.update();
+		if(Clock::ticks >= lastTime + 10)
+		{//every 10 ms
+			lastTime = Clock::ticks;
+			const uint8_t effectId = getDmxEffectId();
+			const uint8_t speed = getDmxSpeed();
+			const uint8_t dt = 10; //FIXME if an effect takes longer than 10ms this is wrong
+			effectManager.execute(effectId, dt, speed, leds, NUM_LEDS);
+			ws2812.update();
+		}
 	}
 	return 0;
 }
