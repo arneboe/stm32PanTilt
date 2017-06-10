@@ -17,7 +17,7 @@
 *
 * STM32 specific functions:
 *         init_UART1(void)
-*	void putc_UART1 (char);                // blocking put char, used by printf()
+*	void putc_UART (char);                // blocking put char, used by printf()
 *
 * local functions:
 * 	int putc_strg(int character, printf_file_t *stream)
@@ -41,8 +41,8 @@
 | options
 +=============================================================================+
 */
-//#define INCLUDE_FLOAT  // this enables float in printf() and costs you about 2kByte ROM
-#define UART1_BAUDRATE  		115200
+#define INCLUDE_FLOAT  // this enables float in printf() and costs you about 2kByte ROM
+#define UART_BAUDRATE  		115200
 /*
 +=============================================================================+
 | global declarations
@@ -59,7 +59,7 @@ int sprintf_(char *buffer, const char *format, ...);
 */
 
 
-void putc_UART1 (char);         // blocking put char; used by printf_()
+void putc_UART (char);         // blocking put char; used by printf_()
 void putc_strg(char);          // the put() function for sprintf()
 char *SPRINTF_buffer;          //
 
@@ -74,48 +74,49 @@ void long_itoa (long, int, int, void (*) (char)); //heavily used by printf_()
 */
 void initPrintf(void)
 {
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 
     GPIO_InitTypeDef GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
 
+//
+//    // USART2 RX-Pin initialize
+//    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+//    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+//    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    // USART1 RX-Pin initialize
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-    // USART1 TX-Pin initialize
+    // USART2 TX-Pin initialize
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     // USART and clock initialize
     USART_ClockInitTypeDef USART_ClockInitStructure;
     USART_ClockStructInit(&USART_ClockInitStructure);
-    USART_ClockInit(USART1, &USART_ClockInitStructure);
+    USART_ClockInit(USART2, &USART_ClockInitStructure);
 
-    USART_InitStructure.USART_BaudRate = UART1_BAUDRATE;
+    USART_InitStructure.USART_BaudRate = UART_BAUDRATE;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    USART_InitStructure.USART_Mode = USART_Mode_Tx;
     USART_InitStructure.USART_Parity = USART_Parity_No;
     USART_InitStructure.USART_StopBits = USART_StopBits_1;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 
-    USART_Init(USART1, &USART_InitStructure);
-    USART_Cmd(USART1, ENABLE);
+    USART_Init(USART2, &USART_InitStructure);
+    USART_Cmd(USART2, ENABLE);
 }
 
-void putc_UART1 (char c)
+void putc_UART (char c)
 {
 	if (c == '\n') {
-		while ((USART1->SR & USART_SR_TXE) == 0);  //blocks until previous byte was sent
-		USART1->DR ='\r';
+		while ((USART2->SR & USART_SR_TXE) == 0);  //blocks until previous byte was sent
+		USART2->DR ='\r';
 	}
-	while ((USART1->SR & USART_SR_TXE) == 0);  //blocks until previous byte was sent
-	USART1->DR = c;
+	while ((USART2->SR & USART_SR_TXE) == 0);  //blocks until previous byte was sent
+	USART2->DR = c;
 }
 
 /*
@@ -134,7 +135,7 @@ int printf_(const char *format, ...)
 	va_list arg;
 
 	va_start(arg, format);
-	vfprintf_((&putc_UART1), format, arg);
+	vfprintf_((&putc_UART), format, arg);
 	va_end(arg);
 
 	return 0;
@@ -207,7 +208,7 @@ static int vfprintf_(void (*putc)(char), const char* str,  va_list arp)
 		if (s) w = -w;      //padd with zeros if negative
 
 	#ifdef INCLUDE_FLOAT
-		w2 = 2;            //default decimal places=2
+		w2 = 6;            //default decimal places=2
 		if (d == '.'){
 			d = *str++; w2 = 0; }
 		while ((d >= '0')&&(d <= '9')) {
