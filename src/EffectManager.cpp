@@ -6,6 +6,8 @@
  */
 
 #include "EffectManager.hpp"
+#include "printf.h"
+#include "Helpers.hpp"
 
 EffectManager::EffectManager() {
 	// TODO Auto-generated constructor stub
@@ -31,6 +33,7 @@ void EffectManager::execute(uint8_t effectId, uint8_t dt, uint8_t speed, uint8_t
 	if(numeffects == 0)
 		return;
 
-	const uint8_t id = effectId % numeffects;
+	const uint8_t id = map2(effectId, 0, 255, 0, numeffects-1);
+
 	effects[id](dt, speed, param1, param2, leds, numLeds);
 }

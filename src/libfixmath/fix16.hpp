@@ -23,14 +23,16 @@ class Fix16 {
 		uint16_t toUint16() const {return (uint16_t)fix16_to_int(value);}
 		int8_t toInt8() const {return (int8_t)fix16_to_int(value);}
 		int8_t toInt16() const {return (int16_t)fix16_to_int(value);}
+		float toFloat() const {return (float) fix16_to_float(value); }
 
 
-
-		Fix16 & operator=(const Fix16 &rhs)  { value = rhs.value;             return *this; }
-		Fix16 & operator=(const fix16_t rhs) { value = rhs;                   return *this; }
-		Fix16 & operator=(const double rhs)  { value = fix16_from_dbl(rhs);   return *this; }
-		Fix16 & operator=(const float rhs)   { value = fix16_from_float(rhs); return *this; }
-		Fix16 & operator=(const int16_t rhs) { value = fix16_from_int(rhs);   return *this; }
+		//FIXME are buggy, always asing zero.. wtf?
+//		Fix16 & operator=(const Fix16 &rhs)  { value = rhs.value;             return *this; }
+//		Fix16 & operator=(const fix16_t rhs) { value = rhs;                   return *this; }
+//		Fix16 & operator=(const double rhs)  { value = fix16_from_dbl(rhs);   return *this; }
+//		Fix16 & operator=(const float rhs)   { value = fix16_from_float(rhs); return *this; }
+//		Fix16 & operator=(const int16_t rhs) { value = fix16_from_int(rhs);   return *this; }
+//		Fix16 & operator=(const uint16_t rhs) { value = fix16_from_int(rhs);   return *this; }
 
 		Fix16 & operator+=(const Fix16 &rhs)  { value += rhs.value;             return *this; }
 		Fix16 & operator+=(const fix16_t rhs) { value += rhs;                   return *this; }
@@ -49,12 +51,15 @@ class Fix16 {
 		Fix16 & operator*=(const double rhs)  { value = fix16_mul(value, fix16_from_dbl(rhs)); return *this; }
 		Fix16 & operator*=(const float rhs)   { value = fix16_mul(value, fix16_from_float(rhs)); return *this; }
 		Fix16 & operator*=(const int16_t rhs) { value *= rhs; return *this; }
+		Fix16 & operator*=(const int8_t rhs) { value *= rhs; return *this; }
+		Fix16 & operator*=(const uint8_t rhs) { value *= rhs; return *this; }
 
 		Fix16 & operator/=(const Fix16 &rhs)  { value = fix16_div(value, rhs.value); return *this; }
 		Fix16 & operator/=(const fix16_t rhs) { value = fix16_div(value, rhs); return *this; }
 		Fix16 & operator/=(const double rhs)  { value = fix16_div(value, fix16_from_dbl(rhs)); return *this; }
 		Fix16 & operator/=(const float rhs)   { value = fix16_div(value, fix16_from_float(rhs)); return *this; }
 		Fix16 & operator/=(const int16_t rhs) { value /= rhs; return *this; }
+
 
 		const Fix16 operator+(const Fix16 &other) const  { Fix16 ret = *this; ret += other; return ret; }
 		const Fix16 operator+(const fix16_t other) const { Fix16 ret = *this; ret += other; return ret; }
@@ -85,6 +90,7 @@ class Fix16 {
 		const Fix16 operator*(const double other) const  { Fix16 ret = *this; ret *= other; return ret; }
 		const Fix16 operator*(const float other) const   { Fix16 ret = *this; ret *= other; return ret; }
 		const Fix16 operator*(const int16_t other) const { Fix16 ret = *this; ret *= other; return ret; }
+		const Fix16 operator*(const int8_t other) const { Fix16 ret = *this; ret *= other; return ret; }
 
 		const Fix16 smul(const Fix16 &other)  const { Fix16 ret = fix16_smul(value, other.value);             return ret; }
 		const Fix16 smul(const fix16_t other) const { Fix16 ret = fix16_smul(value, other);                   return ret; }

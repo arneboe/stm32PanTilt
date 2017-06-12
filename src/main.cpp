@@ -35,6 +35,7 @@
 #include "Led.hpp"
 #include "EffectManager.hpp"
 #include "Effects/ColorFadeEffect.hpp"
+#include "Effects/ColorPulse.hpp"
 #include "ws2812.h"
 #include "Dmx.hpp"
 #include "Helpers.hpp"
@@ -71,6 +72,8 @@ int main()
 
 	EffectManager effectManager;
 	effectManager.addEffect(updateColorFade);
+	effectManager.addEffect(updateColorPulse);
+
 
 	uint32_t lastTime = Clock::ticks;
 	while(true)
@@ -89,7 +92,7 @@ int main()
 
 			if(Clock::ticks - lastTime > 2)
 			{
-				printf_("Timing Error!: %d\n", Clock::ticks - lastTime);
+//				printf_("Timing Error!: %d\n", Clock::ticks - lastTime);
 			}
 		}
 	}
