@@ -158,8 +158,6 @@ bool strobeOn = false;
 uint8_t strobeBrightness()
 {
 
-	return 255;
-
 	const uint8_t strobeSpeed = getDmxstrobe();
 	//below 5 the strobe is off
 	if(strobeSpeed < 3)
