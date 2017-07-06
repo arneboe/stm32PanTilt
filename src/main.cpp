@@ -86,11 +86,11 @@ int main()
 		if(Clock::ticks >= lastTime + 2)
 		{//every 2 ms
 
-			for(int i = 0; i < 8; ++i)
-			{
-			printf_(" %d",getDmxData()[i]);
-			}
-			printf_("\n");
+		//	for(int i = 0; i < 8; ++i)
+		//	{
+		//	printf_(" %d",getDmxData()[i]);
+		//	}
+		//	printf_("\n");
 
 			const uint8_t dt = Clock::ticks - lastTime;
 			lastTime = Clock::ticks;
