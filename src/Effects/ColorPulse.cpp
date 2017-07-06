@@ -1,50 +1,50 @@
 #include "ColorPulse.hpp"
 #include "../libfixmath/fixmath.h"
+#include "../BrightnessLUT.hpp"
 #include "../Helpers.hpp"
-#include "../printf.h"
 
-#define MIN_CPM 1 //changes per Minute
-#define MAX_CPM 400
+#define MIN_CPS 1 //changes per Second
+#define MAX_CPS 1300
+#define MIN_BRIGHTNESS 50
+
 
 struct State
 {
 	float brightness = 0.0;
 	int8_t dir = 1;
-	uint8_t hue = 0;
 };
 
 static State s;
 
 //Fix16 zero(0.0);
-
-void updateColorPulse(uint8_t dt, uint8_t speed, uint8_t param1,
-		              uint8_t param2, Led* leds, uint16_t numLeds)
+void setPulseBrightness(uint8_t dt, uint8_t pulseBrightness, Led* leds, uint16_t numLeds)
 {
-	const float cpm = map2(speed, 0, 255, MIN_CPM, MAX_CPM);
-	const float brightnessChange = cpm / 60.0f * dt / 1000.0f;
-
-	s.brightness += brightnessChange * s.dir;
-	if(s.brightness >= 1)
+	Fix16 bri;
+	if(pulseBrightness < 3)
 	{
-		s.dir = -1;
-		s.brightness = 1;
+		bri = Fix16(1.0f);
 	}
-	else if(s.brightness <= 0)
+	else
 	{
-		s.dir = 1;
-		s.brightness = 0;
+		const float cps = map2(pulseBrightness, 3, 255, MIN_CPS, MAX_CPS);
+		const float brightnessChange = cps / 1000.0f * dt;
+
+		s.brightness += brightnessChange * s.dir;
+		if(s.brightness >= 255)
+		{
+			s.dir = -1;
+			s.brightness = 255;
+		}
+		else if(s.brightness <= MIN_BRIGHTNESS)
+		{
+			s.dir = 1;
+			s.brightness = MIN_BRIGHTNESS;
+		}
+		bri = BrightnessLUT::data[(int)s.brightness];
 	}
 
-	printf_("change: %f ,dir: %d,  speed: %d ,bri: %f\n",brightnessChange, s.dir, speed, s.brightness);
-
-	//FIXME improve performance, not critical right now
-	setAllHue(leds, numLeds, s.hue);
-	Fix16 bri(s.brightness);
 	for(int i = 0; i < numLeds; ++i)
 	{
 		leds[i].setBrightness(bri);
 	}
-
-	//param1 = color
-	//param2 = unused
 }

@@ -41,12 +41,16 @@
 #include "Helpers.hpp"
 
 #define DMX_ADDRESS 1 //dmx addresses start with 1, not zero
+
+//Effect selection
 #define DMX_EFFECT_ID DMX_ADDRESS
-#define DMX_SPEED DMX_ADDRESS + 1
-#define DMX_BRIGHTNESS DMX_ADDRESS + 2
-#define DMX_EFFECT_PARAM_1 DMX_ADDRESS + 3
-#define DMX_EFFECT_PARAM_2 DMX_ADDRESS + 4
-#define DMX_STROBE DMX_ADDRESS + 5
+#define DMX_EFFECT_PARAM_1 DMX_ADDRESS + 1
+#define DMX_EFFECT_PARAM_2 DMX_ADDRESS + 2
+#define DMX_SPEED DMX_ADDRESS + 3
+//Brightness Modifiers
+#define DMX_STROBE DMX_ADDRESS + 4
+#define DMX_PULSE_BRIGHTNESS DMX_ADDRESS + 5
+#define DMX_BRIGHTNESS DMX_ADDRESS + 6
 
 #define NUM_LEDS 60
 
@@ -56,7 +60,9 @@ uint8_t getDmxBrightness();
 uint8_t getDmxEffectParam1();
 uint8_t getDmxEffectParam2();
 uint8_t getDmxstrobe();
+uint8_t getDmxPulseBrightness();
 uint8_t strobeBrightness();
+
 
 
 int main()
@@ -72,7 +78,6 @@ int main()
 
 	EffectManager effectManager;
 	effectManager.addEffect(updateColorFade);
-	effectManager.addEffect(updateColorPulse);
 
 
 	uint32_t lastTime = Clock::ticks;
@@ -80,6 +85,13 @@ int main()
 	{
 		if(Clock::ticks >= lastTime + 2)
 		{//every 2 ms
+
+			for(int i = 0; i < 8; ++i)
+			{
+			printf_(" %d",getDmxData()[i]);
+			}
+			printf_("\n");
+
 			const uint8_t dt = Clock::ticks - lastTime;
 			lastTime = Clock::ticks;
 
@@ -88,6 +100,9 @@ int main()
 			const uint8_t effectParam1 = getDmxEffectParam1();
 			const uint8_t effectParam2 = getDmxEffectParam2();
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
+
+			//run modifiers
+			setPulseBrightness(dt, getDmxPulseBrightness(), leds, NUM_LEDS);
 			ws2812.update(strobeBrightness());
 
 			if(Clock::ticks - lastTime > 2)
@@ -130,6 +145,11 @@ uint8_t getDmxstrobe()
 	return getDmxData()[DMX_STROBE];
 }
 
+uint8_t getDmxPulseBrightness()
+{
+	return getDmxData()[DMX_PULSE_BRIGHTNESS];
+}
+
 
 uint32_t strobeOnTimestamp = 0;
 uint32_t strobeOffTimestamp = 0;
@@ -137,6 +157,9 @@ bool strobeOn = false;
 
 uint8_t strobeBrightness()
 {
+
+	return 255;
+
 	const uint8_t strobeSpeed = getDmxstrobe();
 	//below 5 the strobe is off
 	if(strobeSpeed < 3)

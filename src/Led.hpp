@@ -29,7 +29,7 @@ struct Led
 	}
 
 	/**@param brightness in range [0..1] */
-	void setBrightness(Fix16& brightness)
+	void setBrightness(const Fix16& brightness)
 	{
 		r = (Fix16(r) * brightness).toUint8();
 		g = (Fix16(g) * brightness).toUint8();
