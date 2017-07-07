@@ -66,7 +66,10 @@ void updateAnts(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Led* 
 		s.currentShift = (s.currentShift + shiftValue) % numLeds;
 
 	}
+
 	shift(Buffer::ledBuffer, leds, numLeds, s.currentShift);
+	//shift(Buffer::ledBuffer, leds, 30, s.currentShift);
+	//shift(Buffer::ledBuffer + 30, leds + 30, 30, -s.currentShift);
 
 
 }

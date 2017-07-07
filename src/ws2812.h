@@ -93,6 +93,8 @@ void WS2812<NUM_LEDS>::update(uint8_t brightness)
 	for(int i = 0; i < NUM_LEDS; ++i)
 	{
 		const int mappedI = mapping[i];
+		if(-1 == mappedI)
+			continue;
 		Led l(leds[mappedI]);
 		l.setBrightness(fixBrightness);
 		// (* 24) because every led takes up 24 bytes in the buffer
