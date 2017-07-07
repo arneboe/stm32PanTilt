@@ -36,6 +36,7 @@
 #include "EffectManager.hpp"
 #include "Effects/ColorFadeEffect.hpp"
 #include "Effects/ColorPulse.hpp"
+#include "Effects/StaticColor.hpp"
 #include "ws2812.h"
 #include "Dmx.hpp"
 #include "Helpers.hpp"
@@ -77,6 +78,7 @@ int main()
 	WS2812<NUM_LEDS> ws2812(leds, NUM_LEDS);
 
 	EffectManager effectManager;
+	effectManager.addEffect(updateStaticColor);
 	effectManager.addEffect(updateColorFade);
 
 

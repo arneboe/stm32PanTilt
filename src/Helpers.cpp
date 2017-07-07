@@ -18,3 +18,12 @@ void setAllHue(Led* leds, int16_t numLeds, uint8_t h)
 }
 
 
+void setAllRGB(Led* leds, int16_t numLeds, uint8_t r, uint8_t g, uint8_t b)
+{
+	for(int i = 0; i < numLeds; ++i)
+	{
+		leds[i].r = r;
+		leds[i].g = g;
+		leds[i].b = b;
+	}
+}
