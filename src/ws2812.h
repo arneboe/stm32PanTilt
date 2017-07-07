@@ -8,7 +8,7 @@ template <uint16_t NUM_LEDS>
 class WS2812
 {
 public:
-	WS2812(const Led* leds, size_t num);
+	WS2812(const Led* leds, int16_t* mapping, size_t num);
 
 	/**Update internal buffer from led data
 	 * Data from internal buffer will be send repeatedly until update is called again */
@@ -22,11 +22,12 @@ private:
 	uint8_t buffer[bufferSize] = {0}; //+40 for 50us reset signal
 	/**Led buffer used by user for drawing*/
 	const Led* leds;
+	const int16_t* mapping;
 	const size_t numLeds;
 };
 
 template <uint16_t NUM_LEDS>
-WS2812<NUM_LEDS>::WS2812(const Led* _leds, size_t num) : leds(_leds), numLeds(num)
+WS2812<NUM_LEDS>::WS2812(const Led* _leds, int16_t* mapping, size_t num) : leds(_leds), mapping(mapping), numLeds(num)
 {
 
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -91,7 +92,8 @@ void WS2812<NUM_LEDS>::update(uint8_t brightness)
 	fixBrightness /= (int16_t)255;
 	for(int i = 0; i < NUM_LEDS; ++i)
 	{
-		Led l(leds[i]);
+		const int mappedI = mapping[i];
+		Led l(leds[mappedI]);
 		l.setBrightness(fixBrightness);
 		// (* 24) because every led takes up 24 bytes in the buffer
 		copyLed(l, buffer + i * 24);

@@ -28,6 +28,7 @@
 // ----------------------------------------------------------------------------
 #define FIXMATH_NO_CACHE
 
+
 #include <stdlib.h>
 #include "printf.h"
 #include "stm32f10x_tim.h"
@@ -37,11 +38,13 @@
 #include "Effects/ColorFadeEffect.hpp"
 #include "Effects/ColorPulse.hpp"
 #include "Effects/StaticColor.hpp"
+#include "Effects/AntsEffect.hpp"
 #include "ws2812.h"
 #include "Dmx.hpp"
 #include "Helpers.hpp"
 
 #define DMX_ADDRESS 1 //dmx addresses start with 1, not zero
+#define NUM_LEDS 60 //FIXME duplcate in buffer
 
 //Effect selection
 #define DMX_EFFECT_ID DMX_ADDRESS
@@ -53,7 +56,7 @@
 #define DMX_PULSE_BRIGHTNESS DMX_ADDRESS + 5
 #define DMX_BRIGHTNESS DMX_ADDRESS + 6
 
-#define NUM_LEDS 60
+
 
 uint8_t getDmxEffectId();
 uint8_t getDmxSpeed();
@@ -65,7 +68,6 @@ uint8_t getDmxPulseBrightness();
 uint8_t strobeBrightness();
 
 
-
 int main()
 {
 	initPrintf();
@@ -75,11 +77,15 @@ int main()
 	initDmx();
 
 	Led leds[NUM_LEDS];
-	WS2812<NUM_LEDS> ws2812(leds, NUM_LEDS);
+	int16_t mapping[NUM_LEDS] =
+		{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+	     59, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58};
+	WS2812<NUM_LEDS> ws2812(leds, mapping, NUM_LEDS);
 
 	EffectManager effectManager;
 	effectManager.addEffect(updateStaticColor);
 	effectManager.addEffect(updateColorFade);
+	effectManager.addEffect(updateAnts);
 
 
 	uint32_t lastTime = Clock::ticks;
@@ -115,6 +121,7 @@ int main()
 	}
 	return 0;
 }
+
 
 uint8_t getDmxSpeed()
 {
