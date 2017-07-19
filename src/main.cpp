@@ -127,22 +127,22 @@ int main()
 			const uint8_t dt = Clock::ticks - lastTime;
 			lastTime = Clock::ticks;
 
-			const uint8_t effectId = 255;
-			//const uint8_t effectId = getDmxEffectId();
-			//const uint8_t speed = getDmxSpeed();
-			const uint8_t speed = 50;
+		//	const uint8_t effectId = 255;
+			const uint8_t effectId = getDmxEffectId();
+			const uint8_t speed = getDmxSpeed();
+			//const uint8_t speed = 50;
 
-//			const uint8_t effectParam1 = getDmxEffectParam1();
-			const uint8_t effectParam1 = 50;
-//			const uint8_t effectParam2 = getDmxEffectParam2();
-			const uint8_t effectParam2 = 80;
+			const uint8_t effectParam1 = getDmxEffectParam1();
+//			const uint8_t effectParam1 = 50;
+			const uint8_t effectParam2 = getDmxEffectParam2();
+//			const uint8_t effectParam2 = 80;
 
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
 
 			//run modifiers
 			setPulseBrightness(dt, getDmxPulseBrightness(), leds, NUM_LEDS);
 
-			ws2812.update(255);
+			ws2812.update(getDmxBrightness());
 
 			if(Clock::ticks - lastTime > 2)
 			{
