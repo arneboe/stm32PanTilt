@@ -28,6 +28,13 @@ struct Led
 		setHSV(hue, 255, 255);
 	}
 
+	void setBlack()
+	{
+		r = 0;
+		g = 0;
+		b = 0;
+	}
+
 	/**@param brightness in range [0..1] */
 	void setBrightness(const Fix16& brightness)
 	{
