@@ -43,8 +43,11 @@
 #include "Dmx.hpp"
 #include "Helpers.hpp"
 
-#define DMX_ADDRESS 430 //dmx addresses start with 1, not zero
-#define NUM_LEDS 60 //FIXME duplcate in buffer
+#define DMX_ADDRESS 1 //dmx addresses start with 1, not zero
+//small mirror:
+#define NUM_LEDS 36
+//big mirror:
+//#define NUM_LEDS 60
 
 //Effect selection
 #define DMX_EFFECT_ID DMX_ADDRESS
@@ -77,9 +80,23 @@ int main()
 	initDmx();
 
 	Led leds[NUM_LEDS];
+	//big mirror mapping:
+//	int16_t mapping[NUM_LEDS] =
+//		{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+//	     59, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58};
+
+	//test mapping:
+//	int16_t mapping[NUM_LEDS];
+//	for(int i = 0; i < NUM_LEDS; ++i)
+//	{
+//		mapping[i] = i;
+//	}
+
+	//small mirror mapping:
 	int16_t mapping[NUM_LEDS] =
-		{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-	     59, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58};
+	{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17,
+	 35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18};
+	//59, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58};
 
 
 
@@ -93,6 +110,9 @@ int main()
 
 
 	uint32_t lastTime = Clock::ticks;
+
+	int i = 17;
+
 	while(true)
 	{
 		if(Clock::ticks >= lastTime + 2)
@@ -107,7 +127,8 @@ int main()
 			const uint8_t dt = Clock::ticks - lastTime;
 			lastTime = Clock::ticks;
 
-			const uint8_t effectId = getDmxEffectId();
+			const uint8_t effectId = 0;
+			//const uint8_t effectId = getDmxEffectId();
 			const uint8_t speed = getDmxSpeed();
 			const uint8_t effectParam1 = getDmxEffectParam1();
 			const uint8_t effectParam2 = getDmxEffectParam2();
@@ -115,7 +136,8 @@ int main()
 
 			//run modifiers
 			setPulseBrightness(dt, getDmxPulseBrightness(), leds, NUM_LEDS);
-			ws2812.update(strobeBrightness());
+
+			ws2812.update(255);
 
 			if(Clock::ticks - lastTime > 2)
 			{
