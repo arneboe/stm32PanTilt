@@ -41,6 +41,8 @@
 #include "Effects/AntsEffect.hpp"
 #include "Effects/Rotate1.hpp"
 #include "Effects/FrontBack.hpp"
+#include "Effects/Lines.hpp"
+
 
 #include "ws2812.h"
 #include "Dmx.hpp"
@@ -72,6 +74,8 @@ uint8_t getDmxEffectParam2();
 uint8_t getDmxstrobe();
 uint8_t getDmxPulseBrightness();
 uint8_t strobeBrightness();
+
+
 
 
 int main()
@@ -112,9 +116,9 @@ int main()
 	effectManager.addEffect(updateAnts);
 	effectManager.addEffect(updateRotate);
 	effectManager.addEffect(updateFrontBack);
+	effectManager.addEffect(updateLines);
 
 	uint32_t lastTime = Clock::ticks;
-
 
 	while(true)
 	{
@@ -133,19 +137,19 @@ int main()
 			//const uint8_t effectId = 255;
 			const uint8_t effectId = getDmxEffectId();
 			const uint8_t speed = getDmxSpeed();
-			//const uint8_t speed = 50;
+			//const uint8_t speed = 200;
 
 			const uint8_t effectParam1 = getDmxEffectParam1();
-//			const uint8_t effectParam1 = 50;
+			//const uint8_t effectParam1 = 50;
 			const uint8_t effectParam2 = getDmxEffectParam2();
-//			const uint8_t effectParam2 = 80;
+		//	const uint8_t effectParam2 = 80;
 
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
 
 			//run modifiers
 			setPulseBrightness(dt, getDmxPulseBrightness(), leds, NUM_LEDS);
-
 			ws2812.update(255);
+
 
 			if(Clock::ticks - lastTime > 2)
 			{

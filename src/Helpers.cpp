@@ -42,3 +42,40 @@ void shift(const Led* in, Led* out, int16_t numLeds, int8_t shift)
 
 }
 
+int16_t getLineMaxShift(int16_t numLeds)
+{
+	return numLeds / 8;
+}
+
+void line(Led* leds, int16_t numleds, uint32_t rot, int16_t shift, int16_t* result)
+{
+	const int16_t halfRing = numleds / 4;
+	const int16_t maxShift = getLineMaxShift(numleds);
+
+	result[0] = (0 * halfRing + rot) % numleds;
+	result[1] = (1 * halfRing + rot) % numleds;
+	result[2] = (2 * halfRing + rot) % numleds;
+	result[3] = (3 * halfRing + rot) % numleds;
+
+	if(shift > 0)
+	{
+		result[0] = (result[0] + shift + numleds) % numleds;
+		result[1] = (result[1] - shift + numleds) % numleds;
+		result[2] = (result[2] + shift + numleds) % numleds;
+		result[3] = (result[3] - shift + numleds) % numleds;
+	}
+	else if(shift < 0)
+	{
+		shift *= -1;
+		result[0] = (result[0] - shift + numleds) % numleds;
+		result[1] = (result[1] + shift + numleds) % numleds;
+		result[2] = (result[2] - shift + numleds) % numleds;
+		result[3] = (result[3] + shift + numleds) % numleds;
+	}
+
+
+}
+
+
+
+
