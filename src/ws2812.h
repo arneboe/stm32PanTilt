@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <cstring> //for size_t
 #include "Led.hpp"
+#include "BrightnessLUT.hpp"
 
 
 template <uint16_t NUM_LEDS>
@@ -88,7 +89,7 @@ WS2812<NUM_LEDS>::WS2812(const Led* _leds, int16_t* mapping, size_t num) : leds(
 template <uint16_t NUM_LEDS>
 void WS2812<NUM_LEDS>::update(uint8_t brightness)
 {
-	Fix16 fixBrightness(brightness);
+	Fix16 fixBrightness(BrightnessLUT::data[brightness]);
 	fixBrightness /= (int16_t)255;
 	for(int i = 0; i < NUM_LEDS; ++i)
 	{

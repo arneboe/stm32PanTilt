@@ -61,7 +61,6 @@
 #define DMX_SPEED DMX_ADDRESS + 3
 //Brightness Modifiers
 #define DMX_STROBE DMX_ADDRESS + 4
-#define DMX_PULSE_BRIGHTNESS DMX_ADDRESS + 5
 #define DMX_BRIGHTNESS DMX_ADDRESS + 6
 
 
@@ -72,7 +71,6 @@ uint8_t getDmxBrightness();
 uint8_t getDmxEffectParam1();
 uint8_t getDmxEffectParam2();
 uint8_t getDmxstrobe();
-uint8_t getDmxPulseBrightness();
 uint8_t strobeBrightness();
 
 
@@ -146,8 +144,6 @@ int main()
 
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
 
-			//run modifiers
-			setPulseBrightness(dt, getDmxPulseBrightness(), leds, NUM_LEDS);
 			ws2812.update(255);
 
 
@@ -190,11 +186,6 @@ uint8_t getDmxEffectParam2()
 uint8_t getDmxstrobe()
 {
 	return getDmxData()[DMX_STROBE];
-}
-
-uint8_t getDmxPulseBrightness()
-{
-	return getDmxData()[DMX_PULSE_BRIGHTNESS];
 }
 
 
