@@ -1,3 +1,0 @@
-[submodule "src/pelcoD"]
-	path = src/pelcoD
-	url = git@github.com:arneboe/pelco-d-cpp.git

@@ -143,9 +143,7 @@ int main()
 		//	const uint8_t effectParam2 = 80;
 
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
-
-			ws2812.update(255);
-
+			ws2812.update(strobeBrightness());
 
 			if(Clock::ticks - lastTime > 2)
 			{
