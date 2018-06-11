@@ -61,7 +61,7 @@
 #define DMX_SPEED DMX_ADDRESS + 3
 //Brightness Modifiers
 #define DMX_STROBE DMX_ADDRESS + 4
-#define DMX_BRIGHTNESS DMX_ADDRESS + 6
+#define DMX_BRIGHTNESS DMX_ADDRESS + 5
 
 
 
@@ -123,11 +123,11 @@ int main()
 		if(Clock::ticks >= lastTime + 2)
 		{//every 2 ms
 
-		//	for(int i = 0; i < 8; ++i)
-		//	{
-		//	printf_(" %d",getDmxData()[i]);
-		//	}
-		//	printf_("\n");
+//			for(int i = 0; i < 8; ++i)
+//			{
+//			printf_(" %d",getDmxData()[i]);
+//			}
+//			printf_("\n");
 
 			const uint8_t dt = Clock::ticks - lastTime;
 			lastTime = Clock::ticks;
@@ -135,15 +135,16 @@ int main()
 			//const uint8_t effectId = 255;
 			const uint8_t effectId = getDmxEffectId();
 			const uint8_t speed = getDmxSpeed();
+			const uint8_t brightness = strobeBrightness();
 			//const uint8_t speed = 200;
-
 			const uint8_t effectParam1 = getDmxEffectParam1();
 			//const uint8_t effectParam1 = 50;
 			const uint8_t effectParam2 = getDmxEffectParam2();
 		//	const uint8_t effectParam2 = 80;
 
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
-			ws2812.update(strobeBrightness());
+			printf_("bri %d, eff: %d, spd: %d, p1: %d, p2: %d, strobe: %d\n", brightness, effectId, speed, effectParam1, effectParam2, getDmxstrobe());
+			ws2812.update(brightness);
 
 			if(Clock::ticks - lastTime > 2)
 			{

@@ -90,7 +90,6 @@ template <uint16_t NUM_LEDS>
 void WS2812<NUM_LEDS>::update(uint8_t brightness)
 {
 	Fix16 fixBrightness(BrightnessLUT::data[brightness]);
-	fixBrightness /= (int16_t)255;
 	for(int i = 0; i < NUM_LEDS; ++i)
 	{
 		const int mappedI = mapping[i];
