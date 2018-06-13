@@ -4,7 +4,7 @@
 #include "LedBuffer.hpp"
 
 #define MIN_CPS 1
-#define MAX_CPS 100
+#define MAX_CPS 20
 
 struct State
 {
@@ -21,7 +21,7 @@ void updateAnts(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Led* 
 
 
 	const uint8_t hue = param1;
-	const uint8_t dist = map(param2, 0, 255, 1, 6);
+	const uint8_t dist = map(param2, 0, 255, 1, 10);
 //	printf_("hue: %d, hueChange: %f, speed: %d, cps: %d, dt: %d\n", s.hue.get(), hueChange, speed, cps, dt);
 
 

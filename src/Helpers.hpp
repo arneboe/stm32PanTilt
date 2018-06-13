@@ -12,11 +12,15 @@ void setAllHue(Led* leds, int16_t numLeds, uint8_t h);
 
 void setAllRGB(Led* leds, int16_t numLeds, uint8_t r, uint8_t g, uint8_t b);
 
+void setAllWhite(Led* leds, int16_t numLeds);
+
 
 void shift(const Led* in, Led* out, int16_t numLeds, int8_t shift);
 
 
 //result should have at least size 4
 void line(Led* leds, int16_t numleds, uint32_t rot, int16_t shift, int16_t* result);
+
+void lineWithTail(Led* leds, int16_t numLeds, uint16_t startIdx, uint16_t tailSize, uint8_t hue);
 
 int16_t getLineMaxShift(int16_t numLeds);

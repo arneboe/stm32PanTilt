@@ -35,6 +35,13 @@ struct Led
 		b = 0;
 	}
 
+	void setWhite()
+	{
+	  r = 255;
+	  g = 255;
+	  b = 255;
+	}
+
 	/**@param brightness in range [0..1] */
 	void setBrightness(const Fix16& brightness)
 	{

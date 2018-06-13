@@ -1,4 +1,5 @@
 #include "Helpers.hpp"
+#include "BrightnessLUT.hpp"
 
 int16_t map(int16_t x, int16_t in_min, int16_t in_max, int16_t out_min, int16_t out_max) {
   return ((x - in_min) * (out_max - out_min) + out_min * (in_max - in_min)) / (in_max - in_min);
@@ -15,6 +16,15 @@ void setAllHue(Led* leds, int16_t numLeds, uint8_t h)
 	{
 		leds[i].setHue(h);
 	}
+}
+
+
+void setAllWhite(Led* leds, int16_t numLeds)
+{
+  for(int i = 0; i < numLeds; ++i)
+  {
+    leds[i].setWhite();
+  }
 }
 
 
@@ -47,10 +57,30 @@ int16_t getLineMaxShift(int16_t numLeds)
 	return numLeds / 8;
 }
 
+
+/** Draws a line a "dot" with a tail, i.e. a fading line */
+void lineWithTail(Led* leds, int16_t numLeds, uint16_t startIdx, uint16_t tailSize, uint8_t hue)
+{
+  const int16_t brightnessReductionStep = 256 / tailSize;
+
+  //const uint8_t hueShift = 5;
+  Fix16 brightness((uint8_t)1);
+  for(int j = startIdx; j < startIdx + tailSize; ++j)
+  {
+    leds[j % numLeds].setHue(hue); //Fixme add some hue shift?
+    leds[j % numLeds].setBrightness(BrightnessLUT::data[255 - (j - startIdx) * brightnessReductionStep]);
+  }
+
+}
+
+
+/** Intersects a horizontal line with the circle. Returns indices of both intersections.
+ * @param rot The angle of the start location.
+ * @param shift Height difference from the start location to the line */
 void line(Led* leds, int16_t numleds, uint32_t rot, int16_t shift, int16_t* result)
 {
 	const int16_t halfRing = numleds / 4;
-	const int16_t maxShift = getLineMaxShift(numleds);
+	//const int16_t maxShift = getLineMaxShift(numleds);
 
 	result[0] = (0 * halfRing + rot) % numleds;
 	result[1] = (1 * halfRing + rot) % numleds;

@@ -42,6 +42,7 @@
 #include "Effects/Rotate1.hpp"
 #include "Effects/FrontBack.hpp"
 #include "Effects/Lines.hpp"
+#include "Effects/Rotate2.hpp"
 
 
 #include "ws2812.h"
@@ -115,6 +116,7 @@ int main()
 	effectManager.addEffect(updateRotate);
 	effectManager.addEffect(updateFrontBack);
 	effectManager.addEffect(updateLines);
+	effectManager.addEffect(updateRotate2);
 
 	uint32_t lastTime = Clock::ticks;
 
@@ -143,7 +145,7 @@ int main()
 		//	const uint8_t effectParam2 = 80;
 
 			effectManager.execute(effectId, dt, speed, effectParam1, effectParam2, leds, NUM_LEDS);
-			printf_("bri %d, eff: %d, spd: %d, p1: %d, p2: %d, strobe: %d\n", brightness, effectId, speed, effectParam1, effectParam2, getDmxstrobe());
+			//printf_("bri %d, eff: %d, spd: %d, p1: %d, p2: %d, strobe: %d\n", brightness, effectId, speed, effectParam1, effectParam2, getDmxstrobe());
 			ws2812.update(brightness);
 
 			if(Clock::ticks - lastTime > 2)

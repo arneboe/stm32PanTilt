@@ -5,7 +5,7 @@ void updateStaticColor(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2
 {
 	if(param1 >= 253)
 	{
-		setAllRGB(leds, numLeds, 255, 255, 255);
+		setAllWhite(leds, numLeds);
 	}
 	else
 	{

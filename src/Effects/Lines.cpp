@@ -20,11 +20,11 @@ static State s;
 
 void updateLines(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Led* leds, uint16_t numLeds)
 {
-	//param1 = angle
-	//param2 = hue
+	//param1 = hue
+	//param2 = angle
 
-	const uint8_t angle = map2(param1, 0, 255, 0, numLeds/2);
-	const uint8_t hue = param2;
+	const uint8_t angle = map2(param2, 0, 255, 0, numLeds/2);
+	const uint8_t hue = param1;
 
 	const uint16_t time = map2(speed, 0, 255, MAX_TIME, MIN_TIME);
 
