@@ -43,6 +43,7 @@
 #include "Effects/FrontBack.hpp"
 #include "Effects/Lines.hpp"
 #include "Effects/Rotate2.hpp"
+#include "Effects/HalfCircle.hpp"
 
 
 #include "ws2812.h"
@@ -117,6 +118,7 @@ int main()
 	effectManager.addEffect(updateFrontBack);
 	effectManager.addEffect(updateLines);
 	effectManager.addEffect(updateRotate2);
+	effectManager.addEffect(updateHalfCircle);
 
 	uint32_t lastTime = Clock::ticks;
 
