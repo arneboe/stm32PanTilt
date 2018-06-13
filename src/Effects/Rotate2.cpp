@@ -26,11 +26,6 @@ void updateRotate2(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Le
   const uint8_t size = map(param2, 0, 255, 1, MAX_TAIL_SIZE);
 //  printf_("hue: %d, hueChange: %f, speed: %d, cps: %d, dt: %d\n", s.hue.get(), hueChange, speed, cps, dt);
 
-  //determine parallel start points
-  int16_t l[4] = {0, 0, 0, 0};
-  line(leds, numLeds, 0, 0, l);
-  //parallel start points are at index 0 and 2
-
   //FIXME only redraw if params changed!!!
   //draw pattern in buffer
   for(int i = 0; i < numLeds; ++i)
@@ -38,8 +33,9 @@ void updateRotate2(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Le
     Buffer::ledBuffer[i].setBlack();
   }
 
-  lineWithTail(Buffer::ledBuffer, numLeds, 0, size, hue);
-  lineWithTail(Buffer::ledBuffer, numLeds, numLeds/2, size, hue);
+  const uint8_t hueShift = 50;
+  lineWithTail(Buffer::ledBuffer, numLeds, 0, size, hue, hueShift);
+  lineWithTail(Buffer::ledBuffer, numLeds, numLeds/2, size, hue, hueShift);
 
 
   //shift buffer

@@ -1,5 +1,6 @@
 #include "Helpers.hpp"
 #include "BrightnessLUT.hpp"
+#include "printf.h"
 
 int16_t map(int16_t x, int16_t in_min, int16_t in_max, int16_t out_min, int16_t out_max) {
   return ((x - in_min) * (out_max - out_min) + out_min * (in_max - in_min)) / (in_max - in_min);
@@ -58,17 +59,21 @@ int16_t getLineMaxShift(int16_t numLeds)
 }
 
 
-/** Draws a line a "dot" with a tail, i.e. a fading line */
-void lineWithTail(Led* leds, int16_t numLeds, uint16_t startIdx, uint16_t tailSize, uint8_t hue)
+/** Draws a line a "dot" with a tail, i.e. a fading line
+ * @param hueShift has to be < tailSize */
+void lineWithTail(Led* leds, int16_t numLeds, uint16_t startIdx, uint16_t tailSize, uint8_t hue, uint8_t totalHueShift)
 {
   const int16_t brightnessReductionStep = 256 / tailSize;
+  const Fix16 hueShiftPerPixel = Fix16(totalHueShift) / Fix16(tailSize);
 
+  Fix16 currentHueShift((uint8_t)0);
   //const uint8_t hueShift = 5;
   Fix16 brightness((uint8_t)1);
   for(int j = startIdx; j < startIdx + tailSize; ++j)
   {
-    leds[j % numLeds].setHue(hue); //Fixme add some hue shift?
+    leds[j % numLeds].setHue(hue + currentHueShift.toUint8());
     leds[j % numLeds].setBrightness(BrightnessLUT::data[255 - (j - startIdx) * brightnessReductionStep]);
+    currentHueShift += hueShiftPerPixel;
   }
 
 }

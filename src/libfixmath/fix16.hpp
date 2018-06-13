@@ -11,6 +11,7 @@ class Fix16 {
 		explicit Fix16(const double inValue)  { value = fix16_from_dbl(inValue);   }
 		explicit Fix16(const int16_t inValue) { value = fix16_from_int(inValue);   }
 		explicit Fix16(const uint8_t inValue) { value = fix16_from_int(inValue);   }
+		explicit Fix16(const uint16_t inValue) { value = fix16_from_int(inValue);   }
 
 
 		explicit operator fix16_t() const { return value;                 }
