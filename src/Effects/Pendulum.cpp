@@ -48,10 +48,8 @@ void updatePendulum(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, L
 {
 
   //param1 = color
-  //param2 = pendulum length
+  //param2 = fade to
 
- s.p.len = 0.0058f * param2;
- if(s.p.len < 0.1f) s.p.len = 0.1f;
  s.p.step(dt);//update pendulum state
 
  const float angleDeg = convertAndNormalize(s.p.angle); //convert to degree and normalize to [0..360]
@@ -66,14 +64,29 @@ void updatePendulum(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, L
  const int ledIndex = degStep / 2.0f + angleDeg / degStep;
  printf_("angleDeg: %f, degStep: %f, i: %d\n", angleDeg, degStep, ledIndex);
 
- const uint8_t offset = 5;
+ const uint8_t offset = 10;
+ const uint8_t hue = param1;
+ const uint8_t totalHueShift = param2;
 
- for(int i = 0; i < numLeds / 4 - 4; ++i) {
-   leds[(ledIndex + offset + i) % numLeds].setHue(param1);
- }
+ const uint8_t width = 4;
+ const Fix16 hueShiftPerPixel = Fix16(totalHueShift) / Fix16(width);
 
- for(int i = 0; i < numLeds / 4 - 4; ++i) {
-   leds[(ledIndex + numLeds/2 + offset + 1) % numLeds].setHue(param1);
- }
+ Fix16 currentHueShift((uint8_t)0);
+
+  leds[(ledIndex + offset) % numLeds].setHue(hue);
+  currentHueShift += hueShiftPerPixel;
+  leds[(ledIndex + offset + 1) % numLeds].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset - 1) % numLeds].setHue(hue + currentHueShift.toUint8());
+  currentHueShift += hueShiftPerPixel;
+  leds[(ledIndex + offset + 2) % numLeds].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset - 2) % numLeds].setHue(hue + currentHueShift.toUint8());
+  currentHueShift += hueShiftPerPixel;
+  leds[(ledIndex + offset + 3) % numLeds].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset - 3) % numLeds].setHue(hue + currentHueShift.toUint8());
+
+
+ //for(int i = 0; i < numLeds / 4 - 4; ++i) {
+ //  leds[(ledIndex + numLeds/2 + offset + 1) % numLeds].setHue(param1);
+ //}
 
 }
