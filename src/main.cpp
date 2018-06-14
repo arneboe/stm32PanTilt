@@ -44,6 +44,8 @@
 #include "Effects/Lines.hpp"
 #include "Effects/Rotate2.hpp"
 #include "Effects/HalfCircle.hpp"
+#include "Effects/QuarterCircle.hpp"
+#include "Effects/Pendulum.hpp"
 
 
 #include "ws2812.h"
@@ -119,6 +121,8 @@ int main()
 	effectManager.addEffect(updateLines);
 	effectManager.addEffect(updateRotate2);
 	effectManager.addEffect(updateHalfCircle);
+	effectManager.addEffect(updateQuarterCircle);
+	effectManager.addEffect(updatePendulum);
 
 	uint32_t lastTime = Clock::ticks;
 
