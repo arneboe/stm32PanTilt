@@ -23,6 +23,13 @@ struct Pendulum {
     aVel += aAcc * dt / 1000.0f;
     angle += aVel * dt / 1000.0f;
   }
+
+  void init()
+  {
+    angle = M_PI;
+    aVel = 0.1;
+    aAcc = 0.0f;
+  }
 };
 
 
@@ -30,6 +37,7 @@ struct Pendulum {
 struct State
 {
   Pendulum p;
+  uint32_t lastReset = 0;
 };
 
 static State s;
@@ -46,6 +54,13 @@ float convertAndNormalize(float angleRad){
 
 void updatePendulum(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, Led* leds, uint16_t numLeds)
 {
+  //reset every 10 mins to avoid accumulating rounding errors
+  s.lastReset += dt;
+  if(s.lastReset > 600000)
+  {
+    s.p.init();
+    s.lastReset = 0;
+  }
 
   //param1 = color
   //param2 = fade to
@@ -73,17 +88,32 @@ void updatePendulum(uint8_t dt, uint8_t speed, uint8_t param1, uint8_t param2, L
 
  Fix16 currentHueShift((uint8_t)0);
 
-  leds[(ledIndex + offset) % numLeds].setHue(hue);
+ const uint8_t halfRing = numLeds / 2;
+
+  leds[(ledIndex + offset) % halfRing].setHue(hue);
+  leds[(ledIndex + offset + halfRing) % numLeds].setHue(hue);
   currentHueShift += hueShiftPerPixel;
-  leds[(ledIndex + offset + 1) % numLeds].setHue(hue + currentHueShift.toUint8());
-  leds[(ledIndex + offset - 1) % numLeds].setHue(hue + currentHueShift.toUint8());
+
+  leds[(ledIndex + offset + 1) % halfRing].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset - 1) % halfRing].setHue(hue + currentHueShift.toUint8());
+
+  leds[(ledIndex + offset + halfRing + 1) % numLeds].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset + halfRing - 1) % numLeds].setHue(hue + currentHueShift.toUint8());
+
   currentHueShift += hueShiftPerPixel;
-  leds[(ledIndex + offset + 2) % numLeds].setHue(hue + currentHueShift.toUint8());
-  leds[(ledIndex + offset - 2) % numLeds].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset + 2) % halfRing].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset - 2) % halfRing].setHue(hue + currentHueShift.toUint8());
+
+  leds[(ledIndex + offset + halfRing + 2) % numLeds].setHue(hue + currentHueShift.toUint8());
+  leds[(ledIndex + offset + halfRing - 2) % numLeds].setHue(hue + currentHueShift.toUint8());
+
+
+
+  /*
   currentHueShift += hueShiftPerPixel;
   leds[(ledIndex + offset + 3) % numLeds].setHue(hue + currentHueShift.toUint8());
   leds[(ledIndex + offset - 3) % numLeds].setHue(hue + currentHueShift.toUint8());
-
+*/
 
  //for(int i = 0; i < numLeds / 4 - 4; ++i) {
  //  leds[(ledIndex + numLeds/2 + offset + 1) % numLeds].setHue(param1);
